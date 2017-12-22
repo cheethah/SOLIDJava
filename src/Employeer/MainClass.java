@@ -12,7 +12,7 @@ public class MainClass {
 		
 		//LSP example
 		SpecialAnalystProgrammer sap = new MainClass(). new SpecialAnalystProgrammer();
-		System.out.println(sap.MobileDevOps());
+		System.out.println(sap.PrintSkill());
 		
 		//LSP example
 		Geekseat gs = new MainClass(). new Geekseat(); 
@@ -26,9 +26,18 @@ public class MainClass {
 		
 		EmployeeAction ea = new MainClass(). new EmployeeAction();
 		ea.doAction(new MainClass(). new Promotion());
+		
+		//Singleton pattern
+		DBConnection.Connect();
+		
+		//Builder Pattern
+		BuilderDirector builder = new MainClass(). new BuilderDirector();
+		builder.createEmployee(new MainClass(). new RegularEmployee());
+		builder.createEmployee(new MainClass(). new ExperienceEmployee());
+		
 	}
 	
-	
+	//SRP
 	public interface IPosition{
 		String GetPosition();
 		int GetSalary();
@@ -42,44 +51,25 @@ public class MainClass {
 		}
 	}
 	
-	public interface IEmployee{
-		String GetName();
-		String Id();
+	
+	//OO
+	public interface IRole{
+		String PrintSkill();
 	}
-	public interface ISkill{
-		boolean Java();
-		boolean CSharp();
-		boolean MobileDevOps();
-	}
-	public class AnalystProgrammer implements IEmployee,ISkill{
+	public class AnalystProgrammer implements IRole{
 
-		public boolean Java() {
-			return true;
-		}
-
-		public boolean CSharp() {
-			return true;
-		}
-
-		public boolean MobileDevOps() {
-			return false;
-		}
-
-		public String GetName() {
-			return "Bagas";
-		}
-
-		public String Id() {
-			return "QWEASD1";
+		public String PrintSkill() {
+			return "Java, C#";
 		}
 		
 	}
-	public class SpecialAnalystProgrammer extends AnalystProgrammer {
-		@Override
-		public boolean MobileDevOps() {
-			return true;
+	public class SpecialAnalystProgrammer implements IRole {
+		public String PrintSkill() {
+			return "Java, C#, DevOps";
 		}
 	}
+	//if there is a new role, it can add class to extend IRole implementation but IRole close to modification due to only have method PrintSkill()
+	
 	
 	
 	//LSP
@@ -150,6 +140,71 @@ public class MainClass {
 		public void doAction(IAction action) {
 			System.out.println(action.Result());
 		}
+	}
+	
+	
+	//singleton
+	public static class DBConnection {
+
+		   private static DBConnection dbConnect = null;
+		   private DBConnection() {
+		      // Exists only to defeat instantiation.
+		   }
+
+		   public static DBConnection getInstance() {
+		      if(dbConnect == null) {
+		    	  dbConnect = new DBConnection();
+		      }
+		      return dbConnect;
+		   }
+		   public static void Connect() {
+			   System.out.println("You have been connected");
+		   }
+		}
+	
+	//builder pattern
+	
+	List<String> skills = new ArrayList<String>();
+
+	public interface EmployeeBuilder{
+		void SkillBuilder();
+		void LeaderBuilder();
+		void GetSkill();
+	}
+	public class RegularEmployee implements EmployeeBuilder {
+		
+		public void SkillBuilder(){
+			skills.add("Skillfull");
+		}
+		public void LeaderBuilder() {
+			skills.add("can't lead");
+		}
+		public void GetSkill(){
+			for (String skill : skills){
+				System.out.println(skill);
+			}
+		}
+	}
+	public class ExperienceEmployee implements EmployeeBuilder {
+		
+		public void SkillBuilder(){
+			skills.add("Skillfull");
+		}
+		public void LeaderBuilder() {
+			skills.add("natural leader");
+		}
+		public void GetSkill(){
+			for (String skill : skills){
+				System.out.println(skill);
+			}
+		}
+	}
+	public class BuilderDirector {
+		  public void createEmployee(EmployeeBuilder builder) {
+		    builder.SkillBuilder();
+		    builder.LeaderBuilder();
+		    builder.GetSkill();
+		  }
 	}
 }
 
